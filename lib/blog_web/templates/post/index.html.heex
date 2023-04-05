@@ -1,4 +1,4 @@
-<h1>Listing Posts</h1>
+<h1>Search Posts</h1>
 
 <table>
   <thead>
@@ -11,6 +11,14 @@
     </tr>
   </thead>
   <tbody>
+  <.form let={f} for={@conn} method={"get"} action={Routes.post_path(@conn, :index)}>
+    <%= search_input f, :title %>
+    <%= error_tag f, :title %>
+
+    <div>
+      <%= submit "Search" %>
+    </div>
+  </.form>
 <%= for post <- @posts do %>
     <tr>
       <td><%= post.title %></td>

@@ -15,6 +15,23 @@ defmodule Blog.PostsTest do
       assert Posts.list_posts() == [post]
     end
 
+    test "list_posts/1 _ matching title" do
+      post = post_fixture(title: "Hello World")
+      assert Posts.list_posts("Hello World") == [post]
+    end
+
+    test "list_posts/1 _ non matching title" do
+      post = post_fixture(title: "Hello World")
+      assert Posts.list_posts("Goodbye") == []
+    end
+
+    test "list_posts/1 _ partially matching title" do
+      post = post_fixture(title: "Hello World")
+      assert Posts.list_posts("Hello") == [post]
+      assert Posts.list_posts("Wor") == [post]
+      assert Posts.list_posts("hElLo") == [post]
+    end
+
     test "get_post!/1 returns the post with given id" do
       post = post_fixture()
       assert Posts.get_post!(post.id) == post

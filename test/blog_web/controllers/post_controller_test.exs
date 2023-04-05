@@ -10,7 +10,19 @@ defmodule BlogWeb.PostControllerTest do
   describe "index" do
     test "lists all posts", %{conn: conn} do
       conn = get(conn, Routes.post_path(conn, :index))
-      assert html_response(conn, 200) =~ "Listing Posts"
+      assert html_response(conn, 200) =~ "Search Posts"
+    end
+
+    test "lists all posts _ matching search query", %{conn: conn} do
+      post = post_fixture(title: "Dear Diary")
+      conn = get(conn, Routes.post_path(conn, :index, title: post.title))
+      assert html_response(conn, 200) =~ post.title
+    end
+
+    test "lists all posts _ not matching search query", %{conn: conn} do
+      post = post_fixture(title: "Dear Diary")
+      conn = get(conn, Routes.post_path(conn, :index, title: "Today I Learned"))
+      refute html_response(conn, 200) =~ post.title
     end
   end
 

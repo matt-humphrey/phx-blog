@@ -21,6 +21,17 @@ defmodule Blog.Posts do
     Repo.all(Post)
   end
 
+  def list_posts(title) do
+    search = "%#{title}%"
+    Post
+    |> where([post], ilike(post.title, ^search))
+    |> Repo.all()
+
+    # This also works:
+    # query = from(p in Post, where: ilike(p.title, ^search))
+    # Repo.all(query)
+  end
+
   @doc """
   Gets a single post.
 
