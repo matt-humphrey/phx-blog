@@ -8,22 +8,17 @@
     <%= live_title_tag assigns[:page_title] || "Blog", suffix: " · Phoenix Framework" %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
+    <link href="https://cdn.lineicons.com/3.0/lineicons.css" rel="stylesheet">
   </head>
   <body>
     <header>
-      <section class="container">
-        <nav>
-          <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
-            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
-            <% end %>
-          </ul>
-        </nav>
-        <a href="https://phoenixframework.org/" class="phx-logo">
-          <img src={Routes.static_path(@conn, "/images/phoenix.png")} alt="Phoenix Framework Logo"/>
-        </a>
-      </section>
+      <nav class="bg-gray-300 relative">
+        <ul class="flex flex-row">
+          <li class="px-6 py-3 w-fit text-center hover:bg-gray-400/80"><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+          <li class="px-6 py-3 w-fit text-center hover:bg-gray-400/80"><%= link "Blog", to: Routes.post_path(@conn, :index) %></li>
+          <li class="px-6 py-3 w-fit text-center absolute right-0 hover:bg-gray-400/90"><a href="https://github.com/matt-humphrey"><i class="lni lni-github-original"></i></a></li>
+        </ul>
+      </nav>
     </header>
     <%= @inner_content %>
   </body>

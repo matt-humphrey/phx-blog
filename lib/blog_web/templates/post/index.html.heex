@@ -1,38 +1,40 @@
-<h1>Search Posts</h1>
+<section class="w-full m-8 px-48">
+  <h1 class="text-2xl py-4">Search Posts</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Subtitle</th>
-      <th>Content</th>
+  <table class="">
+    <thead>
+      <tr class="text-left">
+        <th class="">Title</th>
+        <th class="pl-16">Content</th>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  <.form let={f} for={@conn} method={"get"} action={Routes.post_path(@conn, :index)}>
-    <%= search_input f, :title %>
-    <%= error_tag f, :title %>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <.form let={f} for={@conn} method={"get"} action={Routes.post_path(@conn, :index)}>
+        <%= search_input f, :title %>
+        <%= error_tag f, :title %>
 
-    <div>
-      <%= submit "Search" %>
-    </div>
-  </.form>
-<%= for post <- @posts do %>
-    <tr>
-      <td><%= post.title %></td>
-      <td><%= post.subtitle %></td>
-      <td><%= post.content %></td>
+        <span class="mx-8 px-2 py-1 bg-blue-600 hover:bg-blue-600/80 text-white">
+          <%= submit "Search" %>
+        </span>
+      </.form>
+      <%= for post <- @posts do %>
+        <article class="mb-8">
+          <tr>
+            <td><%= post.title %></td>
+            <td class="pl-16 py-1"><%= post.content %></td>
+            <td class="w-64 pl-24 text-blue-600">
+              <span><%= link "Show", to: Routes.post_path(@conn, :show, post) %></span>
+              <span class="pl-2"><%= link "Edit", to: Routes.post_path(@conn, :edit, post) %></span>
+              <span class="pl-2"><%= link "Delete", to: Routes.post_path(@conn, :delete, post), method: :delete, data: [confirm: "Are you sure?"] %></span>
+            </td>
+          </tr>
+        </article>
+      <% end %>
+    </tbody>
+  </table>
 
-      <td>
-        <span><%= link "Show", to: Routes.post_path(@conn, :show, post) %></span>
-        <span><%= link "Edit", to: Routes.post_path(@conn, :edit, post) %></span>
-        <span><%= link "Delete", to: Routes.post_path(@conn, :delete, post), method: :delete, data: [confirm: "Are you sure?"] %></span>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<span><%= link "New Post", to: Routes.post_path(@conn, :new) %></span>
+  <hr class="mt-4 mb-8 border-gray-400 border-1"/>
+  <span class="p-2 font-semibold border-2 border-black bg-gray-300 hover:bg-gray-400/80 hover:shadow"><%= link "New Post", to: Routes.post_path(@conn, :new) %></span>
+</section>
