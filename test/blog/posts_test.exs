@@ -8,7 +8,7 @@ defmodule Blog.PostsTest do
 
     import Blog.PostsFixtures
 
-    @invalid_attrs %{content: nil, subtitle: nil, title: nil}
+    @invalid_attrs %{content: nil, title: nil, published_on: nil, visible: true}
 
     test "list_posts/0 returns all posts" do
       post = post_fixture()
@@ -38,12 +38,13 @@ defmodule Blog.PostsTest do
     end
 
     test "create_post/1 with valid data creates a post" do
-      valid_attrs = %{content: "some content", subtitle: "some subtitle", title: "some title"}
+      valid_attrs = %{content: "some content", title: "some title", published_on: ~D[2000-01-01], visible: true}
 
       assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
       assert post.content == "some content"
-      assert post.subtitle == "some subtitle"
       assert post.title == "some title"
+      assert post.published_on == ~D[2000-01-01]
+      assert post.visible == true
     end
 
     test "create_post/1 with invalid data returns error changeset" do
@@ -52,12 +53,13 @@ defmodule Blog.PostsTest do
 
     test "update_post/2 with valid data updates the post" do
       post = post_fixture()
-      update_attrs = %{content: "some updated content", subtitle: "some updated subtitle", title: "some updated title"}
+      update_attrs = %{content: "some updated content", title: "some updated title", published_on: ~D[2023-04-11], visible: false}
 
       assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
       assert post.content == "some updated content"
-      assert post.subtitle == "some updated subtitle"
       assert post.title == "some updated title"
+      assert post.published_on == ~D[2023-04-11]
+      assert post.visible == false
     end
 
     test "update_post/2 with invalid data returns error changeset" do

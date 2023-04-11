@@ -18,12 +18,21 @@ defmodule Blog.Posts do
 
   """
   def list_posts do
-    Repo.all(Post)
+    # query = from(p in Post, where: p.visible == true)
+    # Repo.all(query)
+    date = Date.utc_today()
+    Post
+    |> where([post], post.visible == true)
+    |> where([post], post.published_on < ^date)
+    |> Repo.all()
   end
 
   def list_posts(title) do
+    date = Date.utc_today()
     search = "%#{title}%"
     Post
+    |> where([post], post.visible == true)
+    |> where([post], post.published_on < ^date)
     |> where([post], ilike(post.title, ^search))
     |> Repo.all()
 
