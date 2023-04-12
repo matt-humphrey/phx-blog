@@ -12,6 +12,13 @@
     <%= @post.content %>
   </li>
 
+  <li>
+    <strong>Comments:</strong>
+    <%= for comment <- @post.comments do %>
+      <p><%= comment.content %></p>
+    <% end %>
+  </li>
+
 </ul>
 
 <span><%= link "Edit", to: Routes.post_path(@conn, :edit, @post) %></span> |

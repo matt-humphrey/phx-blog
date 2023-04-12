@@ -32,7 +32,7 @@ defmodule BlogWeb.PostController do
   end
 
   def show(conn, %{"id" => id}) do
-    post = Posts.get_post!(id)
+    post = Posts.get_post!(id) |> Blog.Repo.preload([:comments])
     render(conn, "show.html", post: post)
   end
 
