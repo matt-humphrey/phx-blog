@@ -27,7 +27,7 @@ defmodule Blog.Posts do
     |> Repo.all()
   end
 
-  def list_posts(title) do
+  def list_posts({:title, title}) do
     date = Date.utc_today()
     search = "%#{title}%"
     Post
@@ -40,6 +40,12 @@ defmodule Blog.Posts do
     # query = from(p in Post, where: ilike(p.title, ^search))
     # Repo.all(query)
   end
+
+  # def list_posts({:user_id, user_id}) do
+  #   Post
+  #   |> where([p], p.user_id == ^user_id)
+  #   |> Repo.all()
+  # end
 
   @doc """
   Gets a single post.
@@ -106,7 +112,8 @@ defmodule Blog.Posts do
 
   """
   def delete_post(%Post{} = post) do
-    Repo.delete(post)
+    post
+    |> Repo.delete()
   end
 
   @doc """

@@ -15,6 +15,10 @@ defmodule BlogWeb.CommentController do
   end
 
   def create(conn, %{"comment" => comment_params}) do
+    comment_params =
+      comment_params
+      |> Map.put("user_id", conn.assigns[:current_user].id)
+
     case Comments.create_comment(comment_params) do
       {:ok, comment} ->
         conn
@@ -25,6 +29,40 @@ defmodule BlogWeb.CommentController do
         render(conn, "new.html", changeset: changeset)
     end
   end
+
+  # def create(conn, %{"comment" => comment_params}) do
+  #   IO.inspect(conn.params, label: "CHECK")
+  #   IO.inspect(conn.assigns)
+
+  #   comment_params =
+  #     comment_params
+  #     |> Map.put("post_id", 11)
+  #     |> Map.put("user_id", conn.assigns[:current_user].id)
+
+  #   case Comments.create_comment(comment_params) do
+  #     {:ok, comment} ->
+  #       conn
+  #       |> put_flash(:info, "Comment created successfully.")
+  #       |> redirect(to: Routes.comment_path(conn, :show, comment))
+
+  #     {:error, %Ecto.Changeset{} = changeset} ->
+  #       render(conn, "new.html", changeset: changeset)
+  #   end
+  # end
+
+  # def create(conn, %{"comment" => comment_params}, %{"id" => id}) do
+  #   comment = Comments.get_comment!(id)
+
+  #   case Comments.create_comment(comment_params) do
+  #     {:ok, comment} ->
+  #       conn
+  #       |> put_flash(:info, "Comment created successfully.")
+  #       |> redirect(to: Routes.comment_path(conn, :show, comment))
+
+  #     {:error, %Ecto.Changeset{} = changeset} ->
+  #       render(conn, "new.html", changeset: changeset)
+  #   end
+  # end
 
   def show(conn, %{"id" => id}) do
     comment = Comments.get_comment!(id)

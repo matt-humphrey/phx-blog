@@ -3,9 +3,13 @@ defmodule BlogWeb.PostController do
 
   alias Blog.Posts
   alias Blog.Posts.Post
+  alias Blog.Comments
+  alias Blog.Comments.Comment
+
+  plug :require_user_owns_post when action in [:edit, :update, :delete]
 
   def index(conn, %{"title" => title}) do
-    posts = Posts.list_posts(title)
+    posts = Posts.list_posts({:title, title})
     render(conn, "index.html", posts: posts)
   end
 
@@ -20,6 +24,10 @@ defmodule BlogWeb.PostController do
   end
 
   def create(conn, %{"post" => post_params}) do
+    post_params = Map.put(post_params, "user_id", conn.assigns[:current_user].id)
+    IO.inspect(conn.assigns)
+    IO.inspect(conn.params)
+
     case Posts.create_post(post_params) do
       {:ok, post} ->
         conn
@@ -33,7 +41,8 @@ defmodule BlogWeb.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Posts.get_post!(id) |> Blog.Repo.preload([:comments])
-    render(conn, "show.html", post: post)
+    changeset = Comments.change_comment(%Comment{})
+    render(conn, "show.html", changeset: changeset, post: post)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -44,7 +53,6 @@ defmodule BlogWeb.PostController do
 
   def update(conn, %{"id" => id, "post" => post_params}) do
     post = Posts.get_post!(id)
-
     case Posts.update_post(post, post_params) do
       {:ok, post} ->
         conn
@@ -63,5 +71,19 @@ defmodule BlogWeb.PostController do
     conn
     |> put_flash(:info, "Post deleted successfully.")
     |> redirect(to: Routes.post_path(conn, :index))
+  end
+
+  def require_user_owns_post(conn, _opts) do
+    post_id = String.to_integer(conn.path_params["id"])
+    post = Posts.get_post!(post_id)
+
+    if conn.assigns[:current_user].id == post.user_id do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You do not own this resource.")
+      |> redirect(to: Routes.post_path(conn, :index))
+      |> halt()
+    end
   end
 end
