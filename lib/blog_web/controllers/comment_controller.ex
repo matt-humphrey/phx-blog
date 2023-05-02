@@ -4,6 +4,8 @@ defmodule BlogWeb.CommentController do
   alias Blog.Comments
   alias Blog.Comments.Comment
 
+  plug :require_user_owns_comment when action in [:edit, :update, :delete]
+
   def index(conn, _params) do
     comments = Comments.list_comments()
     render(conn, "index.html", comments: comments)
@@ -15,9 +17,7 @@ defmodule BlogWeb.CommentController do
   end
 
   def create(conn, %{"comment" => comment_params}) do
-    comment_params =
-      comment_params
-      |> Map.put("user_id", conn.assigns[:current_user].id)
+    comment_params = Map.put(comment_params, "user_id", conn.assigns[:current_user].id)
 
     case Comments.create_comment(comment_params) do
       {:ok, comment} ->
@@ -29,40 +29,6 @@ defmodule BlogWeb.CommentController do
         render(conn, "new.html", changeset: changeset)
     end
   end
-
-  # def create(conn, %{"comment" => comment_params}) do
-  #   IO.inspect(conn.params, label: "CHECK")
-  #   IO.inspect(conn.assigns)
-
-  #   comment_params =
-  #     comment_params
-  #     |> Map.put("post_id", 11)
-  #     |> Map.put("user_id", conn.assigns[:current_user].id)
-
-  #   case Comments.create_comment(comment_params) do
-  #     {:ok, comment} ->
-  #       conn
-  #       |> put_flash(:info, "Comment created successfully.")
-  #       |> redirect(to: Routes.comment_path(conn, :show, comment))
-
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-  #       render(conn, "new.html", changeset: changeset)
-  #   end
-  # end
-
-  # def create(conn, %{"comment" => comment_params}, %{"id" => id}) do
-  #   comment = Comments.get_comment!(id)
-
-  #   case Comments.create_comment(comment_params) do
-  #     {:ok, comment} ->
-  #       conn
-  #       |> put_flash(:info, "Comment created successfully.")
-  #       |> redirect(to: Routes.comment_path(conn, :show, comment))
-
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-  #       render(conn, "new.html", changeset: changeset)
-  #   end
-  # end
 
   def show(conn, %{"id" => id}) do
     comment = Comments.get_comment!(id)
@@ -96,5 +62,19 @@ defmodule BlogWeb.CommentController do
     conn
     |> put_flash(:info, "Comment deleted successfully.")
     |> redirect(to: Routes.comment_path(conn, :index))
+  end
+
+  def require_user_owns_comment(conn, _opts) do
+    comment_id = String.to_integer(conn.path_params["id"])
+    comment = Comments.get_comment!(comment_id)
+
+    if conn.assigns[:current_user].id == comment.user_id do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You do not own this resource.")
+      |> redirect(to: Routes.comment_path(conn, :index))
+      |> halt()
+    end
   end
 end

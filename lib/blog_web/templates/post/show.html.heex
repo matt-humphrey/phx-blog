@@ -21,18 +21,18 @@
 
 </ul>
 
-<%= form_for @changeset, Routes.comment_path(@conn, :create), fn f -> %>
-  <%= label f, :content %>
-  <%= textarea f, :content %>
-  <%= error_tag f, :content %>
-  <%= hidden_input f, :post_id, value: @post.id %>
-
-  <div>
-    <%= submit "Save" %>
-  </div>
-<% end %>
-
 <%= if @current_user do %>
+  <%= form_for @changeset, Routes.comment_path(@conn, :create), fn f -> %>
+    <%= label f, :content %>
+    <%= textarea f, :content %>
+    <%= error_tag f, :content %>
+    <%= hidden_input f, :post_id, value: @post.id %>
+
+    <div>
+      <%= submit "Save" %>
+    </div>
+  <% end %>
+
   <span><%= link "Edit", to: Routes.post_path(@conn, :edit, @post) %></span> |
 <% end %>
 <span><%= link "Back", to: Routes.post_path(@conn, :index) %></span>
