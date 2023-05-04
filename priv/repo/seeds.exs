@@ -11,10 +11,12 @@
 # and so on) as they will fail if something goes wrong.
 
 alias Blog.Posts
-alias Blog.Posts.Post
-alias Blog.Comments
+# alias Blog.Posts.Post
+# alias Blog.Comments
 alias Blog.Comments.Comment
 alias Blog.Repo
+alias Blog.Tags
+alias Blog.Tags.Tag
 
 date = ~D[2023-04-11]
 
@@ -41,3 +43,14 @@ Posts.create_post(%{title: "New Post!", content: "G'day!", published_on: date})
 |> Comment.changeset(%{content: Faker.Lorem.sentence(50)})
 |> Ecto.Changeset.put_assoc(:post, long_post)
 |> Repo.insert!()
+
+["elixir", "phoenix", "writing", "reflection", "travel"]
+|> Enum.map(fn tag_name ->
+  case Repo.get_by(Tag, name: tag_name) do
+    %Tag{} = tag ->
+      IO.inspect(tag_name, label: "Tag already created.")
+
+    nil ->
+      Tags.create_tag(%{name: tag_name})
+  end
+end)

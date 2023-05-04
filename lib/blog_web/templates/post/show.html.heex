@@ -13,6 +13,15 @@
   </li>
 
   <li>
+    <strong>Tags:</strong>
+    <ul>
+      <%= for tag <- @post.tags do %>
+        <li><%= link tag.name, to: Routes.tag_path(@conn, :show, tag) %></li>
+      <% end %>
+    </ul>
+  </li>
+
+  <li>
     <strong>Comments:</strong>
     <%= for comment <- @post.comments do %>
       <p><%= comment.content %></p>

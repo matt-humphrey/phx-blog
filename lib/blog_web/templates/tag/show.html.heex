@@ -1,0 +1,22 @@
+<h1>Show Tag</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @tag.name %>
+  </li>
+
+  <li>
+    <strong>Posts:</strong>
+    <ul>
+      <%= for post <- @tag.posts do %>
+        <li><%= link post.title, to: Routes.post_path(@conn, :show, post) %></li>
+      <% end %>
+    </ul>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.tag_path(@conn, :edit, @tag) %></span> |
+<span><%= link "Back", to: Routes.tag_path(@conn, :index) %></span>

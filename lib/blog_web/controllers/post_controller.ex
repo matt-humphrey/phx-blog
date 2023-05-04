@@ -5,6 +5,8 @@ defmodule BlogWeb.PostController do
   alias Blog.Posts.Post
   alias Blog.Comments
   alias Blog.Comments.Comment
+  alias Blog.Tags
+  # alias Blog.Tags.Tag
 
   plug :require_user_owns_post when action in [:edit, :update, :delete]
 
@@ -25,10 +27,10 @@ defmodule BlogWeb.PostController do
 
   def create(conn, %{"post" => post_params}) do
     post_params = Map.put(post_params, "user_id", conn.assigns[:current_user].id)
-    IO.inspect(conn.assigns)
-    IO.inspect(conn.params)
+    {tag_ids, post_params} = Map.pop(post_params, "tags", [])
+    tags = Enum.map(tag_ids, &Tags.get_tag!/1)
 
-    case Posts.create_post(post_params) do
+    case Posts.create_post(post_params, tags) do
       {:ok, post} ->
         conn
         |> put_flash(:info, "Post created successfully.")
@@ -40,20 +42,24 @@ defmodule BlogWeb.PostController do
   end
 
   def show(conn, %{"id" => id}) do
-    post = Posts.get_post!(id) |> Blog.Repo.preload([:comments])
+    post = Posts.get_post!(id) |> Blog.Repo.preload([:comments, :tags])
     changeset = Comments.change_comment(%Comment{})
     render(conn, "show.html", changeset: changeset, post: post)
   end
 
   def edit(conn, %{"id" => id}) do
     post = Posts.get_post!(id)
+    tag_ids = Enum.map(post.tags, & &1.id)
     changeset = Posts.change_post(post)
-    render(conn, "edit.html", post: post, changeset: changeset)
+    render(conn, "edit.html", post: post, changeset: changeset, tag_ids: tag_ids)
   end
 
   def update(conn, %{"id" => id, "post" => post_params}) do
     post = Posts.get_post!(id)
-    case Posts.update_post(post, post_params) do
+    {tag_ids, post_params} = Map.pop(post_params, "tags", [])
+    tags = Enum.map(tag_ids, &Tags.get_tag!/1)
+
+    case Posts.update_post(post, post_params, tags) do
       {:ok, post} ->
         conn
         |> put_flash(:info, "Post updated successfully.")

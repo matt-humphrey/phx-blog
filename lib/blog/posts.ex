@@ -25,6 +25,7 @@ defmodule Blog.Posts do
     |> where([post], post.visible == true)
     |> where([post], post.published_on < ^date)
     |> Repo.all()
+    |> Repo.preload(:tags)
   end
 
   def list_posts({:title, title}) do
@@ -35,17 +36,12 @@ defmodule Blog.Posts do
     |> where([post], post.published_on < ^date)
     |> where([post], ilike(post.title, ^search))
     |> Repo.all()
+    |> Repo.preload(:tags)
 
     # This also works:
     # query = from(p in Post, where: ilike(p.title, ^search))
     # Repo.all(query)
   end
-
-  # def list_posts({:user_id, user_id}) do
-  #   Post
-  #   |> where([p], p.user_id == ^user_id)
-  #   |> Repo.all()
-  # end
 
   @doc """
   Gets a single post.
@@ -61,7 +57,7 @@ defmodule Blog.Posts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_post!(id), do: Repo.get!(Post, id)
+  def get_post!(id), do: Repo.get!(Post, id) |> Repo.preload(:tags)
 
   @doc """
   Creates a post.
@@ -75,9 +71,9 @@ defmodule Blog.Posts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_post(attrs \\ %{}) do
+  def create_post(attrs \\ %{}, tags \\ []) do
     %Post{}
-    |> Post.changeset(attrs)
+    |> Post.changeset(attrs, tags)
     |> Repo.insert()
   end
 
@@ -93,9 +89,9 @@ defmodule Blog.Posts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_post(%Post{} = post, attrs) do
+  def update_post(%Post{} = post, attrs, tags \\ []) do
     post
-    |> Post.changeset(attrs)
+    |> Post.changeset(attrs, tags)
     |> Repo.update()
   end
 

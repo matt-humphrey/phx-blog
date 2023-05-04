@@ -23,6 +23,7 @@ defmodule BlogWeb.Router do
     get "/", PageController, :index
     resources "/posts", PostController
     resources "/comments", CommentController
+    resources "/tags", TagController
   end
 
   # Other scopes may use custom stacks.
@@ -100,9 +101,7 @@ defmodule BlogWeb.Router do
     post "/users/confirm/:token", UserConfirmationController, :update
 
     get "/posts", PostController, :index
-    get "/posts/:id", PostController, :show
 
     get "/comments", CommentController, :index
-    get "/comments/:id", CommentController, :show
   end
 end
