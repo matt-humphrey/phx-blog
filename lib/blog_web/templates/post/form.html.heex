@@ -13,7 +13,7 @@
   <%= textarea f, :content %>
   <%= error_tag f, :content %>
 
-   <%= multiple_select f, :tags, tag_options(), selected: assigns[:tag_ids] || [] %>
+  <%= multiple_select f, :tags, tag_options(), selected: assigns[:tag_ids] || [] %>
 
   <%= label f, :published_on %>
   <%= date_input f, :published_on %>
@@ -22,6 +22,12 @@
   <%= label f, :visible %>
   <%= checkbox f, :visible %>
   <%= error_tag f, :visible %>
+
+  <%= inputs_for f, :post_content, fn post_content_form -> %>
+    <%= label post_content_form, :full_text %>
+    <%= text_input post_content_form, :full_text %>
+    <%= error_tag post_content_form, :full_text %>
+  <% end %>
 
   <div>
     <%= submit "Save" %>

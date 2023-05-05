@@ -51,6 +51,20 @@ defmodule BlogWeb.PostControllerTest do
       conn = post(conn, Routes.post_path(conn, :create), post: @invalid_attrs)
       assert html_response(conn, 200) =~ "New Post"
     end
+
+    test "create a post with associated post content", %{conn: conn} do
+      create_attrs = Map.put(@create_attrs, :post_content, %{full_text: "some full text"})
+      conn = post(conn, Routes.post_path(conn, :create), post: create_attrs)
+
+      assert %{id: id} = redirected_params(conn)
+      assert redirected_to(conn) == Routes.post_path(conn, :show, id)
+
+      conn = get(conn, Routes.post_path(conn, :show, id))
+
+      response = html_response(conn, 200)
+      assert response =~ "Show Post"
+      assert response =~ "some full text"
+    end
   end
 
   describe "edit post" do

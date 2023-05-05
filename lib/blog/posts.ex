@@ -91,6 +91,7 @@ defmodule Blog.Posts do
   """
   def update_post(%Post{} = post, attrs, tags \\ []) do
     post
+    |> Repo.preload(:post_content)
     |> Post.changeset(attrs, tags)
     |> Repo.update()
   end

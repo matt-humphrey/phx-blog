@@ -42,13 +42,13 @@ defmodule BlogWeb.PostController do
   end
 
   def show(conn, %{"id" => id}) do
-    post = Posts.get_post!(id) |> Blog.Repo.preload([:comments, :tags])
+    post = Posts.get_post!(id) |> Blog.Repo.preload([:comments, :tags, :post_content])
     changeset = Comments.change_comment(%Comment{})
     render(conn, "show.html", changeset: changeset, post: post)
   end
 
   def edit(conn, %{"id" => id}) do
-    post = Posts.get_post!(id)
+    post = Posts.get_post!(id) |> Blog.Repo.preload(:post_content)
     tag_ids = Enum.map(post.tags, & &1.id)
     changeset = Posts.change_post(post)
     render(conn, "edit.html", post: post, changeset: changeset, tag_ids: tag_ids)

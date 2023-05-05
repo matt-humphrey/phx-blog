@@ -12,6 +12,13 @@
     <%= @post.content %>
   </li>
 
+  <%= if @post.post_content do %>
+    <li>
+      <strong>Full Text:</strong>
+      <%= @post.post_content.full_text %>
+    </li>
+  <% end %>
+
   <li>
     <strong>Tags:</strong>
     <ul>

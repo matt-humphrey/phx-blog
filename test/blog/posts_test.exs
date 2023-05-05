@@ -51,6 +51,14 @@ defmodule Blog.PostsTest do
       assert {:error, %Ecto.Changeset{}} = Posts.create_post(@invalid_attrs)
     end
 
+    test "create_post/1 with post content creates a post with associated post content" do
+      valid_attrs = %{post_content: %{full_text: "some full text"}, title: "some title"}
+
+      assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
+      assert post.title == "some title"
+      assert post.post_content.full_text == "some full text"
+    end
+
     test "update_post/2 with valid data updates the post" do
       post = post_fixture()
       update_attrs = %{content: "some updated content", title: "some updated title", published_on: ~D[2023-04-11], visible: false}
@@ -66,6 +74,14 @@ defmodule Blog.PostsTest do
       post = post_fixture()
       assert {:error, %Ecto.Changeset{}} = Posts.update_post(post, @invalid_attrs)
       assert post == Posts.get_post!(post.id)
+    end
+
+    test "update_post/2 with post content post's associated post content" do
+      post = post_fixture()
+      update_attrs = %{post_content: %{full_text: "some updated full text"}}
+
+      assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
+      assert post.post_content.full_text == "some updated full text"
     end
 
     test "delete_post/1 deletes the post" do
