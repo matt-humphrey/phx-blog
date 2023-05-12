@@ -23,7 +23,7 @@ defmodule Blog.Posts do
     date = Date.utc_today()
     Post
     |> where([post], post.visible == true)
-    |> where([post], post.published_on < ^date)
+    |> where([post], post.published_on <= ^date)
     |> Repo.all()
     |> Repo.preload(:tags)
   end
@@ -33,7 +33,7 @@ defmodule Blog.Posts do
     search = "%#{title}%"
     Post
     |> where([post], post.visible == true)
-    |> where([post], post.published_on < ^date)
+    |> where([post], post.published_on <= ^date)
     |> where([post], ilike(post.title, ^search))
     |> Repo.all()
     |> Repo.preload(:tags)

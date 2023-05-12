@@ -1,10 +1,9 @@
 <ul>
 <%= if @current_user do %>
-  <li><%= @current_user.email %></li>
-  <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></li>
-  <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></li>
+  <li class="text-nord-6"><%= @current_user.email %></li>
+  <li><%= link "Settings", to: Routes.user_settings_path(@conn, :edit), class: "text-nord-6 hover:text-nord-4" %></li>
+  <li><%= link "Log out", to: Routes.user_session_path(@conn, :delete), class: "text-nord-6 hover:text-nord-4", method: :delete %></li>
 <% else %>
-  <li><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></li>
-  <li><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></li>
+  <li><%= link "Log in", to: Routes.user_session_path(@conn, :new), class: "flex px-4 py-2 text-nord-6 bg-nord-8 hover:bg-nord-7 focus:ring-2 focus:outline-none focus:ring-nord-8 font-medium rounded-lg text-sm text-center mr-3" %></li>
 <% end %>
 </ul>

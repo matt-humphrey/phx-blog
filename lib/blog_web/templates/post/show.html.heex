@@ -1,54 +1,44 @@
-<h1>Show Post</h1>
+<article class="w-2/5 mt-8 mx-auto">
+  <h1 class="text-3xl font-bold text-center mb-6"><%= @post.title %></h1>
 
-<ul>
-
-  <li>
-    <strong>Title:</strong>
-    <%= @post.title %>
-  </li>
-
-  <li>
-    <strong>Content:</strong>
-    <%= @post.content %>
-  </li>
-
-  <%= if @post.post_content do %>
-    <li>
-      <strong>Full Text:</strong>
-      <%= @post.post_content.full_text %>
-    </li>
-  <% end %>
-
-  <li>
-    <strong>Tags:</strong>
-    <ul>
-      <%= for tag <- @post.tags do %>
-        <li><%= link tag.name, to: Routes.tag_path(@conn, :show, tag) %></li>
-      <% end %>
-    </ul>
-  </li>
-
-  <li>
-    <strong>Comments:</strong>
-    <%= for comment <- @post.comments do %>
-      <p><%= comment.content %></p>
+  <div class="border-b border-gray-900/10 pb-5">
+    <%= if @post.post_content do %>
+      <p class="text-left"><%= @post.post_content.full_text %></p>
     <% end %>
-  </li>
+  </div>
 
-</ul>
+  <section class="my-4">
+    <strong>Tags:</strong>
+    <%= for tag <- @post.tags do %>
+      <span><%= link tag.name, to: Routes.tag_path(@conn, :show, tag), class: "hover:underline" %></span>
+    <% end %>
+  </section>
 
-<%= if @current_user do %>
-  <%= form_for @changeset, Routes.comment_path(@conn, :create), fn f -> %>
-    <%= label f, :content %>
-    <%= textarea f, :content %>
-    <%= error_tag f, :content %>
-    <%= hidden_input f, :post_id, value: @post.id %>
+  <section class="w-2/3">
+    <%= if @current_user do %>
+      <%= form_for @changeset, Routes.comment_path(@conn, :create), fn f -> %>
+        <%= label f, :content, "Comments", class: "block font-bold leading-6 text-gray-900" %>
+        <%= textarea f, :content, placeholder: "Write comment here.", class: "mt-2 w-full block rounded-md border-0 pb-4 text-gray-900 text-sm shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-nord-8 placeholder:text-sm placeholder:text-nord-2" %>
+        <%= error_tag f, :content %>
+        <%= hidden_input f, :post_id, value: @post.id %>
 
-    <div>
-      <%= submit "Save" %>
-    </div>
-  <% end %>
+        <div class="flex justify-end">
+          <%= submit "Save", class: "mt-2 rounded-md bg-nord-8 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nord-8" %>
+        </div>
+      <% end %>
 
-  <span><%= link "Edit", to: Routes.post_path(@conn, :edit, @post) %></span> |
-<% end %>
-<span><%= link "Back", to: Routes.post_path(@conn, :index) %></span>
+      <span class="px-2"><%= link "Edit", to: Routes.post_path(@conn, :edit, @post) %></span> |
+      <span class="px-2"><%= link "Delete", to: Routes.post_path(@conn, :delete, @post), method: :delete, data: [confirm: "Are you sure?"] %></span> |
+    <% end %>
+  </section>
+
+  <section class="mt-4 space-y-2">
+    <%= if @post.comments do %>
+      <%= for comment <- @post.comments do %>
+        <p><%= comment.content %></p>
+      <% end %>
+    <% end %>
+  </section>
+
+  <span><%= link "Back", to: Routes.post_path(@conn, :index) %></span>
+</article>

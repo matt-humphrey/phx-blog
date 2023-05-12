@@ -1,35 +1,54 @@
-<.form let={f} for={@changeset} action={@action}>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+<.form let={f} for={@changeset} action={@action}, class="space-y-5 w-1/3 mx-auto">
+  <div class="border-b border-gray-900/10 pb-5">
+    <%= if @changeset.action do %>
+      <div class="alert alert-danger text-center mx-auto">
+        <p>Oops, something went wrong!</p>
+        <p>Please check the errors below.</p>
+      </div>
+    <% end %>
+
+    <div class="mt-10 grid grid-cols-1 gap-y-8">
+      <div class="col-span-full">
+        <div class="text-sm flex flex-row">
+          <%= label f, :title, class: "font-medium text-gray-900" %>
+          <span class="ml-8">
+            <%= error_tag f, :title %>
+          </span>
+        </div>
+        <%= text_input f, :title, class: "mt-2 block w-full flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-nord-8 flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900" %>
+      </div>
+
+      <div class="col-span-full">
+        <%= inputs_for f, :post_content, fn post_content_form -> %>
+          <%= label post_content_form, :full_text, "Content", class: "block text-sm font-medium leading-6 text-gray-900" %>
+          <%= textarea post_content_form, :full_text, class: "mt-2 block w-full rounded-md border-0 pb-16 text-gray-900 text-sm shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-nord-8" %>
+          <div class="">
+            <%= error_tag post_content_form, :full_text %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="">
+        <%= label f, :tags, class: "block text-sm font-medium leading-6 text-gray-900" %>
+        <%= multiple_select f, :tags, tag_options(), selected: assigns[:tag_ids] || [], class: "mt-2 block w-full rounded-md border-0 text-gray-900 text-sm shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-nord-8" %>
+      </div>
+
+      <div class="relative flex gap-x-3">
+        <div class="flex h-6 items-center">
+          <%= checkbox f, :visible, class: "flex h-4 w-4 rounded border-gray-300 text-nord-8 focus:ring-nord-8" %>
+        </div>
+        <div class="text-sm leading-6">
+          <%= label f, :visible, "Public", class: "font-medium text-gray-900" %>
+          <p class="text-gray-500">Other people can view your post.</p>
+        </div>
+      </div>
+
+      <%= hidden_input f, :published_on, value: Date.utc_today %>
     </div>
-  <% end %>
+  </div>
 
-  <%= label f, :title %>
-  <%= text_input f, :title %>
-  <%= error_tag f, :title %>
-
-  <%= label f, :content %>
-  <%= textarea f, :content %>
-  <%= error_tag f, :content %>
-
-  <%= multiple_select f, :tags, tag_options(), selected: assigns[:tag_ids] || [] %>
-
-  <%= label f, :published_on %>
-  <%= date_input f, :published_on %>
-  <%= error_tag f, :published_on %>
-
-  <%= label f, :visible %>
-  <%= checkbox f, :visible %>
-  <%= error_tag f, :visible %>
-
-  <%= inputs_for f, :post_content, fn post_content_form -> %>
-    <%= label post_content_form, :full_text %>
-    <%= text_input post_content_form, :full_text %>
-    <%= error_tag post_content_form, :full_text %>
-  <% end %>
-
-  <div>
-    <%= submit "Save" %>
+  <div class="flex items-center justify-end gap-x-6">
+    <%= link "Cancel", to: Routes.post_path(@conn, :index), class: "text-sm font-semibold leading-6 text-gray-900" %>
+    <%= submit "Save", class: "rounded-md bg-nord-8 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nord-8" %>
   </div>
 </.form>
