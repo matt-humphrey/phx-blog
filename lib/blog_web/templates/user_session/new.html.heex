@@ -1,27 +1,39 @@
-<h1>Log in</h1>
-
-<.form let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}>
-  <%= if @error_message do %>
-    <div class="alert alert-danger">
-      <p><%= @error_message %></p>
-    </div>
-  <% end %>
-
-  <%= label f, :email %>
-  <%= email_input f, :email, required: true %>
-
-  <%= label f, :password %>
-  <%= password_input f, :password, required: true %>
-
-  <%= label f, :remember_me, "Keep me logged in for 60 days" %>
-  <%= checkbox f, :remember_me %>
-
-  <div>
-    <%= submit "Log in" %>
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <!-- img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600" alt="Matt's Blog" -->
+    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
   </div>
-</.form>
 
-<p>
-  <%= link "Register", to: Routes.user_registration_path(@conn, :new) %> |
-  <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new) %>
-</p>
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <.form let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user}, class="space-y-6">
+      <%= if @error_message do %>
+        <div class="alert alert-danger">
+          <p><%= @error_message %></p>
+        </div>
+      <% end %>
+
+      <%= label f, :email, class: "block text-sm font-medium leading-6 text-gray-900" %>
+      <%= email_input f, :email, required: true, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-nord-8 sm:text-sm sm:leading-6" %>
+
+      <div class="flex items-center justify-between">
+        <%= label f, :password, class: "block text-sm font-medium leading-6 text-gray-900" %>
+        <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new), class: "text-sm font-semibold text-nord-8 hover:text-nord-7" %>
+      </div>
+      <%= password_input f, :password, required: true, class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-nord-8 sm:text-sm sm:leading-6" %>
+
+      <div class="flex items-center">
+        <%= checkbox f, :remember_me, class: "h-4 w-4 mr-3 rounded-sm border-gray-300 text-nord-8 focus:ring-nord-8" %>
+        <%= label f, :remember_me, "Keep me logged in for 30 days", class: "block text-sm font-medium leading-6 text-gray-900" %>
+      </div>
+
+      <div>
+        <%= submit "Sign in", class: "flex w-full justify-center rounded-md bg-nord-8 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-nord-7 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-nord-8" %>
+      </div>
+    </.form>
+  </div>
+
+  <p class="mt-10 text-center text-sm text-gray-500">
+    Don't have an account?
+    <%= link "Create one here", to: Routes.user_registration_path(@conn, :new), class: "font-semibold leading-6 text-nord-8 hover:text-nord-7" %>
+  </p>
+</div>

@@ -4,9 +4,9 @@ defmodule BlogWeb.PostControllerTest do
   import Blog.AccountsFixtures
   import Blog.PostsFixtures
 
-  @create_attrs %{content: "some content", subtitle: "some subtitle", title: "some title"}
-  @update_attrs %{content: "some updated content", subtitle: "some updated subtitle", title: "some updated title"}
-  @invalid_attrs %{content: nil, subtitle: nil, title: nil}
+  @create_attrs %{post_content: %{full_text: "some content"}, title: "some title"}
+  @update_attrs %{post_content: %{full_text: "some updated content"}, title: "some updated title"}
+  @invalid_attrs %{post_content: nil, title: nil}
 
   setup :register_and_log_in_user
 
@@ -44,7 +44,9 @@ defmodule BlogWeb.PostControllerTest do
       assert redirected_to(conn) == Routes.post_path(conn, :show, id)
 
       conn = get(conn, Routes.post_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "Show Post"
+      response = html_response(conn, 200)
+      assert response =~ @create_attrs.title
+      assert response =~ @create_attrs.post_content.full_text
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -62,7 +64,7 @@ defmodule BlogWeb.PostControllerTest do
       conn = get(conn, Routes.post_path(conn, :show, id))
 
       response = html_response(conn, 200)
-      assert response =~ "Show Post"
+      assert response =~ @create_attrs.title
       assert response =~ "some full text"
     end
   end
