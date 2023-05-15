@@ -16,6 +16,17 @@
     </section>
 
     <section class="w-2/3">
+      <section class="mt-4 space-y-2">
+      <%= if @post.comments do %>
+        <strong>Comments</strong>
+        <ol class="list-decimal list-inside leading-8">
+          <%= for comment <- @post.comments do %>
+            <li><%= comment.content %></li>
+          <% end %>
+        </ol>
+      <% end %>
+      </section>
+
       <%= if @current_user do %>
         <%= form_for @changeset, Routes.comment_path(@conn, :create), fn f -> %>
           <%= textarea f, :content, placeholder: "Write comment here.", class: "mt-2 w-full block rounded-md border-0 pb-4 text-gray-900 text-sm shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-nord-8 placeholder:text-sm placeholder:text-nord-2" %>
@@ -27,17 +38,6 @@
           </div>
         <% end %>
       <% end %>
-
-      <section class="mt-4 space-y-2">
-      <%= if @post.comments do %>
-        <strong>Comments</strong>
-        <ol class="list-decimal list-inside leading-8">
-          <%= for comment <- @post.comments do %>
-            <li><%= comment.content %></li>
-          <% end %>
-        </ol>
-      <% end %>
-    </section>
     </section>
 
 
